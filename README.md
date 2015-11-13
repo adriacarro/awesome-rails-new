@@ -11,7 +11,7 @@ rvm use --create 2.1.2@project_name
 gem install --no-rdoc --no-ri rails
 
 # generate the new rails project
-rails new project_name
+rails new project_name -d mysql
 
 # go into the new project directory and create an .rvmrc for the gemset
 echo 2.1.2 > .ruby-version
