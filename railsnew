@@ -1,0 +1,51 @@
+#!/bin/bash
+# $1 - project name
+# $2 - ruby version
+# $3 - database name
+
+project=$1
+ruby=$2
+database=$3
+
+# use rvm
+source ~/.rvm/scripts/rvm
+
+# create and use the new RVM gemset
+rvm use --create $ruby@$project
+
+# install rails into the blank gemset
+gem install --no-rdoc --no-ri rails
+
+# generate the new rails project
+rails new $project -d mysql
+
+# go into the new project directory and create an .rvmrc for the gemset
+echo $ruby > $project/.ruby-version
+echo $project > $project/.ruby-gemset
+cd $project
+
+# create git repo and config gitignore
+git init
+echo ".bundle" > .gitignore
+echo "db/*.sqlite3" >> .gitignore
+echo "backups/*" >> .gitignore
+echo "public/system/*" >> .gitignore
+echo "log/*.log" >> .gitignore
+echo "*.log" >> .gitignore
+echo "tmp/**/*" >> .gitignore
+echo "tmp/*" >> .gitignore
+echo "tmp/" >> .gitignore
+echo "doc/api" >> .gitignore
+echo "doc/app" >> .gitignore
+echo "*.swp" >> .gitignore
+echo "*~" >> .gitignore
+echo ".sass-cache/" >> .gitignore
+echo ".DS_Store" >> .gitignore
+echo ".DS_Store*" >> .gitignore
+
+# create database
+mysql -u root -e "create database $database CHARACTER SET utf8 COLLATE utf8_general_ci"
+
+subl .
+open http://localhost:3000/
+rails s
